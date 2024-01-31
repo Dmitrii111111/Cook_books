@@ -36,3 +36,4 @@ class RecipeProduct(models.Model):
     class Meta:
         verbose_name = 'Рецепт Продукт'
         verbose_name_plural = 'Рецепты Продукты'
+        unique_together = ('recipe', 'product')  # для соблюдения атомарной операции в views.py для функции (update_or_create)

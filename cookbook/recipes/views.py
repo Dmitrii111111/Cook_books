@@ -1,3 +1,4 @@
+from django.db.models import F
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseNotFound
 from .models import Product, Recipe, RecipeProduct
@@ -35,9 +36,9 @@ def cook_recipe(request):
         try:
             recipe = Recipe.objects.get(pk=recipe_id)
             recipe_products = recipe.recipeproduct_set.all()
+
             for recipe_product in recipe_products:
-                recipe_product.product.times_cooked += 1
-                recipe_product.product.save()
+                Product.objects.filter(pk=recipe_product.product_id).update(times_cooked=F('times_cooked') + 1)  # атомарная операции, устраняя проблему race condition.
         except Recipe.DoesNotExist:
             return HttpResponse("Ошибка: рецепт не найден")
 
